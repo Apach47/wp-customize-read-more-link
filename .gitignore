@@ -1,5 +1,6 @@
 *.log
 .htaccess
+.phpintel/
 sitemap.xml
 sitemap.xml.gz
 wp-config.php
