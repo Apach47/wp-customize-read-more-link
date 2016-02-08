@@ -2,7 +2,32 @@
 
 namespace RMLcustomizer\Core\Attributes;
 
-interface Basic_attribute
+interface Basic_Attribute
 {
-    public function get();
+	/**
+	 * Get attribute's value
+	 * 
+	 * @return string
+	 */
+	public function get();
+
+	/**
+	 * Merge attribute with exist value
+	 * 
+	 * @return string
+	 */
+	public function merge( $value );
+
+	/**
+	 * Get attribute's name
+	 * 
+	 * @return string
+	 */
+	public function identifier();
+
+	/**
+	 * Load or not it attribute
+	 */
+	public function active();
+
 }

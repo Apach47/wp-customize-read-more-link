@@ -5,17 +5,26 @@ namespace RMLcustomizer\Modules\Attributes;
 /**
  *
  */
-class Title implements \RMLcustomizer\Core\Attributes\Basic_attribute
+class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 {
+	const NAME = 'title';
 
-    public function __construct()
-    {
-        echo "rml_Link_attribute_css_title";
-        # code...
-    }
+	public function __construct() {
+	}
 
-    public function get()
-    {
-        # code...
-    }
+	public function identifier() {
+		return static::NAME;
+	}
+
+	public function active() {
+		return true;
+	}
+
+	public function get() {
+		return 'Adding title in the plugin';
+	}
+
+	public function merge( $value ) {
+		return $value . '::custom sufix title';
+	}
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace RMLcustomizer\Modules\Attributes;
+namespace RMLcustomizer\Modules\Attributes\Angular;
 
 /**
  *
  */
-class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
+class Ng_Click implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 {
-	const NAME = 'href';
+	const NAME = 'ng-click';
 
 	public function __construct() {
 	}
@@ -21,10 +21,10 @@ class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 	}
 
 	public function get() {
-		return '#sub-plg-test';
+		return 'wp-now()';
 	}
 
 	public function merge( $value ) {
-		return $value . '#sub-plg-test';
+		return $value;
 	}
 }

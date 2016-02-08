@@ -1,0 +1,5 @@
+the_content_more_link
+https://developer.wordpress.org/reference/hooks/the_content_more_link/
+
+excerpt_more
+https://developer.wordpress.org/reference/hooks/excerpt_more/

@@ -1,13 +1,14 @@
 <?php
 
-namespace RMLcustomizer\Modules\Attributes;
+namespace RMLcustomizer\Modules\Attributes\Css;
 
 /**
  *
  */
-class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
+class Id implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 {
-	const NAME = 'href';
+
+	const NAME = 'id';
 
 	public function __construct() {
 	}
@@ -21,10 +22,10 @@ class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 	}
 
 	public function get() {
-		return '#sub-plg-test';
+		return 'plg-id-test';
 	}
 
 	public function merge( $value ) {
-		return $value . '#sub-plg-test';
+		return $value . 'plg-id-test';
 	}
 }
