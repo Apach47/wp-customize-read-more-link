@@ -146,7 +146,7 @@ class Bootstrap
 		// Link after all transformation
 		$served_link = $manipulate->get_link();
 
-		var_dump( [ $attributes, $contents, $served_link ] );
+		var_dump( [ $contents, $served_link ] );
 		exit();
 		return $served_link;
 	}

@@ -5,7 +5,7 @@ namespace RMLcustomizer\Modules\Contents;
 /**
  *
  */
-class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
+class Wrap implements \RMLcustomizer\Core\Contents\Basic_Content
 {
 	public function __construct() {
 	}
@@ -19,10 +19,10 @@ class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
 	}
 
 	public function next() {
-		return new Wrap();
+		return null;
 	}
 
 	public function get( $html ) {
-		return '<i class="plg-icon"></i>' . $html;
+		return '<span class=\'ppc\'>' . $html . '</span>';
 	}
 }

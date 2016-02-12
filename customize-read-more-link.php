@@ -4,7 +4,7 @@
 Plugin Name: Customize [Read more...] link
 Plugin URI: https://github.com/Apach47/wp-customize-read-more-link
 Description: Allow customization "[Read more...]" link with post and single page
-Version: 0.0.1
+Version: 0.0.2
 Author: Kudryavtsev Maxim
 Author URI: https://github.com/Apach47
 License: GPL V3
