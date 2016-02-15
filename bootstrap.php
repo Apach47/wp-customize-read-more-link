@@ -100,6 +100,7 @@ class Bootstrap
 	 */
 	private function run_plugin() {
 
+		$attributes = (new \RMLcustomizer\Core\Attributes\Loader_Attributes())->load();
 		\RMLcustomizer\Core\Setting::get_instance()->gg();
 
 		// add_filter('excerpt_more', array($this, 'excerpt_more'));

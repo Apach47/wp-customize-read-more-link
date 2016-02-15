@@ -17,6 +17,9 @@ class Style implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 		return static::NAME;
 	}
 
+	public function by_default() {
+	}
+
 	public function active() {
 		return false;
 	}

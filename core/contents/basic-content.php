@@ -5,7 +5,7 @@ namespace RMLcustomizer\Core\Contents;
 /**
  *
  */
-interface Basic_Content
+interface Basic_Content extends \RMLcustomizer\Core\Base_Module
 {
 	/**
 	 * Load or not it content's bit

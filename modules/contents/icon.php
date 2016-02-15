@@ -22,6 +22,9 @@ class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
 		return new Wrap();
 	}
 
+	public function by_default() {
+	}
+
 	public function get( $html ) {
 		return '<i class="plg-icon"></i>' . $html;
 	}

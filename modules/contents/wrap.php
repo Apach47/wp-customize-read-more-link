@@ -22,6 +22,9 @@ class Wrap implements \RMLcustomizer\Core\Contents\Basic_Content
 		return null;
 	}
 
+	public function by_default() {
+	}
+
 	public function get( $html ) {
 		return '<span class=\'ppc\'>' . $html . '</span>';
 	}

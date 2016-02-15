@@ -22,6 +22,9 @@ class Text implements \RMLcustomizer\Core\Contents\Basic_Content
 		return new Icon();
 	}
 
+	public function by_default() {
+	}
+
 	public function get( $text ) {
 
 		$text = 0;

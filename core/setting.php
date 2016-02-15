@@ -8,10 +8,12 @@ namespace RMLcustomizer\Core;
 class Setting
 {
 	const MODULE_NAMESPACE = 'RMLcustomizer\\Modules\\';
+
+	// All option must be stored in single array for than sending database only one query
 	const ROOT_OPTION = 'rml-customizer';
 
 	// Array consist all plugin's option
-	private $option;
+	private $setting_list;
 
 	// Singleton instance
 	private static $instance = null;
@@ -30,16 +32,20 @@ class Setting
 		return self::$instance;
 	}
 
-	private function __construct() {
+	protected function __construct() {
 
-		$this->option[ self::ROOT_OPTION ] = $this->build_list_option();
+		$this->setting_list = get_option( self::ROOT_OPTION, array() );
 	}
 
 	public function gg() {
 
-		$zz = $this->convert_classname( 'RMLcustomizer\\Modules\\Contents\\Text\\News\\Between' );
-		$kk = $this->make_option_name( 'RMLcustomizer\\Modules\\Contents\\Text\\News\\Between' );
-		var_dump( [ $zz, $kk ] );
+		// $result = $this->initialize();
+
+		// var_dump( array( self::ROOT_OPTION => $this->option ) );
+		var_dump( $this->setting_list );
+
+		// $term = $this->terminate();
+		// var_dump( $term );
 
 		/**
 		 * Все настройки хранятся в БД в виде одного массива
@@ -52,11 +58,11 @@ class Setting
 	}
 
 	/**
-	 * Build list all modules
+	 * Create scaffold for all modules in plugin
 	 *
 	 * @return array
 	 */
-	private function build_list_option() {
+	private function scaffolding_options() {
 
 		// Load all existing modules
 		$modules = array_merge(
@@ -68,62 +74,20 @@ class Setting
 
 		foreach ( $modules as $name ) {
 			$classname = (new \ReflectionClass( $name ))->getName();
-			$releative_name = substr( $classname, strlen( self::MODULE_NAMESPACE ) );
-			$segments = explode( '\\', $releative_name );
-
-			$add_option = function( $list, $item ) use ( &$add_option ) {
-
-				if ( false === is_null( $key = array_shift( $item ) ) ) {
-
-					$option = strtolower( str_replace( '_', '-', $key ) );
-
-					if ( false === array_key_exists( $option, $list ) ) {
-						$list[ $option ] = array();
-					}
-
-					$list[ $option ] = $add_option($list[ $option ], $item);
-					return $list;
-
-				}
-
-				return null;
-			};
-
-			$options_list = $add_option($options_list, $segments);
+			$option = $this->class_name_to_option_name( $classname );
+			$options_list[ $option ] = null;
 		}
 
 		return $options_list;
 	}
 
 	/**
-	 * Convert __CLASS__ in a module to array for than extracting his setting
+	 * Convert __CLASS__ a module to string without '\' and '_' symbols
 	 *
-	 * @param $classname String Full class name, like RMLcustomizer\Modules\Contents\Text
-	 * @return Array Full deep path to setting in plugin's setting array
+	 * @param $classname String Full class name, like 'RMLcustomizer\Modules\Contents\Text'
+	 * @return String Option name, for example 'contents-text'
 	 */
-	public function convert_classname( $classname ) {
-
-		if ( false !== strpos( $classname, self::MODULE_NAMESPACE ) ) {
-			$releative_name = substr( $classname, strlen( self::MODULE_NAMESPACE ) );
-		} else {
-			$releative_name = $classname;
-		}
-
-		// Namespace segment separate with '\'
-		$segments_name = explode( '\\', $releative_name );
-
-		while ( false === is_null( $param = array_shift( $segments_name ) ) ) {
-			$option = strtolower( str_replace( '_', '-', $param ) );
-
-			if ( empty( $segments_name ) ) {
-				return array( $option => null );
-			}
-
-			return array( $option => $this->convert_classname( implode( '\\', $segments_name ) ) );
-		}
-	}
-
-	private function make_option_name( $classname ) {
+	private function class_name_to_option_name( $classname ) {
 		$releative_name = substr( $classname, strlen( self::MODULE_NAMESPACE ) );
 		$option_name = strtolower( str_replace( array( '\\', '_' ), '-', $releative_name ) );
 
@@ -131,23 +95,56 @@ class Setting
 	}
 
 		/**
-	 * Initialize option's plugin. Trigger when plugin install
+	 * Plugin options will be add in the database. Triggering when plugin install
 	 *
-	 * @return bool True if initialization success and false otherwise
+	 * @return bool True if initialization success
 	 */
 	public function initialize() {
 
-		return add_option( $this->option );
+		if ( false === add_option( self::ROOT_OPTION, array() ) ) {
+			throw new \Exception( 'Plugin initialization finished with fail. First off, check your database permission ' );
+		}
+
+		return true;
 	}
 
-
+	/**
+	 * Remove all option from database. Triggering when plugin uninstall
+	 *
+	 * @return Boolean True if option's list was removed success
+	 */
 	public function terminate() {
 
-		return delete_option( $this->option );
+		if ( delete_option( self::ROOT_OPTION ) ) {
+			return true;
+		}
+
+		throw new \Exception( 'Remove option was finish with fail. You may remove option ' . self::ROOT_OPTION . ' manualy from table\'s database \'wp-option\'' );
+
 	}
 
-	public static function retrieve() {
+	/**
+	 * Get options for one module
+	 *
+	 * @param String Full class name of module
+	 * @return Array Option releated specific module
+	 */
+	public function retrieve( $module ) {
 
+		$classname = (new \ReflectionClass( $module ))->getName();
+		$option = $this->class_name_to_option_name( $classname );
+
+		// Loading new module
+		if ( false === array_key_exists( $option, $this->setting_list ) ) {
+			$this->setting_list[ $option ] = $module->by_default();
+
+			if ( false === update_option( self::ROOT_OPTION, $this->setting_list ) ) {
+				throw new \Exception('Update options finished with fail.
+					Checking permission the database ');
+			}
+		}
+
+		return $this->setting_list[ $option ];
 	}
 
 	/**
