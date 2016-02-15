@@ -8,6 +8,7 @@ namespace RMLcustomizer\Modules\Attributes;
 class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 {
 	const NAME = 'title';
+	private $title;
 
 	public function __construct() {
 	}
@@ -18,6 +19,19 @@ class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function active() {
 		return true;
+	}
+
+	/**
+	 * Setting field in the option page with admin panel
+	 *
+	 * @return array
+	 */
+	public function view() {
+		return array(
+			'type' => 'text',
+			'setting-field' => __CLASS__,
+			'validation' => 'absint',
+		);
 	}
 
 	public function get() {

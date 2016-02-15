@@ -6,3 +6,6 @@ Create base architecture
 
 ## Depending
 yum install php-xml
+
+## Backlog
+add "preset" is a collection setting for change appearance the link

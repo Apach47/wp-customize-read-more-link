@@ -97,9 +97,7 @@ abstract class Loader
 			$loaded_object = new $full_class_name;
 
 			if ( $loaded_object instanceof $basic_type ) {
-				if ( $loaded_object->active() ) {
-					$result[] = $loaded_object;
-				}
+				$result[] = $loaded_object;
 			} else {
 				unset( $loaded_object );
 			}
