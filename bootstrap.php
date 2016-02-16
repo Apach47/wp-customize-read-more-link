@@ -36,7 +36,7 @@ class Bootstrap
 
 		load_plugin_textdomain( $this->text_domain, false, $this->plugin_path.'\lang' );
 
-		$this->run_plugin();
+		// $this->run_plugin();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_styles' ) );
@@ -101,6 +101,7 @@ class Bootstrap
 	private function run_plugin() {
 
 		$attributes = (new \RMLcustomizer\Core\Attributes\Loader_Attributes())->load();
+		$contents = (new \RMLcustomizer\Core\Contents\Loader_Contents())->load();
 		\RMLcustomizer\Core\Setting::get_instance()->gg();
 
 		// add_filter('excerpt_more', array($this, 'excerpt_more'));
@@ -138,7 +139,7 @@ class Bootstrap
 		// Link after all transformation
 		$served_link = $manipulate->get_link();
 
-		var_dump( [ $contents, $served_link ] );
+		var_dump( [ $attributes, $contents, $served_link ] );
 		exit();
 		return $served_link;
 	}

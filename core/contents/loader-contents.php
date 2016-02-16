@@ -44,11 +44,6 @@ class Loader_Contents extends \RMLcustomizer\Core\Loader
 				$last = count( $chain ) - 1;
 				$next = $chain[ $last ]->next();
 
-				// Load only enabled module
-				while ( false === $next->active() ) {
-					$next = $next->next();
-				}
-
 				// End the chain
 				if ( is_null( $next ) ) {
 					break;

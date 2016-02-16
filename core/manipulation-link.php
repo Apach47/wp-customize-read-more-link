@@ -116,18 +116,27 @@ class Manipulation_Link
 		// How will being process it attribute
 		// Module is a container with custom attribute's setting
 		foreach ( $list_attributes as $module ) {
-			// Already exist attributes
-			for ( $attribute = 0; $attribute < $attributes_link->length; ++$attribute ) {
-				$item = $attributes_link->item( $attribute );
+			// Inactive module doesn't need
+			if ( false !== $module->active() ) {
+				// Attribute finded or not
+				$attribute_exist = false;
+				// Already exist attributes
+				for ( $attribute = 0; $attribute < $attributes_link->length; ++$attribute ) {
+					$item = $attributes_link->item( $attribute );
 
-				// Update value with exist attribute
-				if ( $module->identifier() === $item->name ) {
-					$node_link->setAttribute( $item->name, $module->merge( $item->value ) );
-					continue;
+					// Update value with exist attribute
+					if ( $module->identifier() === $item->name ) {
+						$node_link->setAttribute( $item->name, $module->merge( $item->value ) );
+						$attribute_exist = true;
+						break;
+					}
 				}
 
-				// Add new attribute
-				$node_link->setAttribute( $module->identifier(), $module->get() );
+				// I have deal with new attribute
+				if ( false === $attribute_exist ) {
+					// Add new attribute
+					$node_link->setAttribute( $module->identifier(), $module->get() );
+				}
 			}
 		}
 
@@ -140,7 +149,10 @@ class Manipulation_Link
 		$content_link = $this->text_link;
 
 		foreach ( $list_elements as $element ) {
-			$content_link = $element->get( $content_link );
+			//Inactive module doesn't need
+			if ( false !== $element->active() ) {
+				$content_link = $element->get( $content_link );
+			}
 		}
 
 		$this->text_link = $content_link;

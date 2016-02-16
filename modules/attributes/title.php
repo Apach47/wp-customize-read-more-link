@@ -9,13 +9,11 @@ class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 {
 	const NAME = 'title';
 	private $title;
-	private $is_active;
 
 	public function __construct() {
 
 		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 		$this->title = $setting['value'];
-		$this->is_active = $setting['active'];
 	}
 
 	public function identifier() {
@@ -23,11 +21,13 @@ class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 	}
 
 	public function by_default() {
-		return array( 'value' => 'Title test new', 'active' => true );
+		return array(
+			'value' => '',
+		);
 	}
 
 	public function active() {
-		return empty( $this->is_active ) ? false : true;
+		return empty( $this->title ) ? false : true;
 	}
 
 	/**
@@ -44,10 +44,10 @@ class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 	}
 
 	public function get() {
-		return 'Adding title in the plugin';
+		return $this->title;
 	}
 
 	public function merge( $value ) {
-		return $value . '::custom sufix title';
+		return $value . $this->title;
 	}
 }

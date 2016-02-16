@@ -7,11 +7,16 @@ namespace RMLcustomizer\Modules\Contents;
  */
 class Text implements \RMLcustomizer\Core\Contents\Basic_Content
 {
+	private $text;
+
 	public function __construct() {
+
+		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
+		$this->text = $setting['value'];
 	}
 
 	public function active() {
-		return true;
+		return empty( $this->text ) ? false : true;
 	}
 
 	public function enter() {
@@ -23,12 +28,12 @@ class Text implements \RMLcustomizer\Core\Contents\Basic_Content
 	}
 
 	public function by_default() {
+		return array(
+			'value' => '',
+		);
 	}
 
 	public function get( $text ) {
-
-		$text = 0;
-		$text_link = 'Plugin more...';
-		return $text_link;
+		return $this->text;
 	}
 }

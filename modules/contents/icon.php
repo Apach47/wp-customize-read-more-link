@@ -7,11 +7,16 @@ namespace RMLcustomizer\Modules\Contents;
  */
 class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
 {
+	private $icon;
+
 	public function __construct() {
+
+		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
+		$this->icon = $setting['value'];
 	}
 
 	public function active() {
-		return true;
+		return empty( $this->icon ) ? false : true;
 	}
 
 	public function enter() {
@@ -23,9 +28,12 @@ class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
 	}
 
 	public function by_default() {
+		return array(
+			'value' => '',
+		);
 	}
 
 	public function get( $html ) {
-		return '<i class="plg-icon"></i>' . $html;
+		return sprintf( '<i class="%s">%s</i>', $this->icon, $html );
 	}
 }

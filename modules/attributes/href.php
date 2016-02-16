@@ -8,8 +8,12 @@ namespace RMLcustomizer\Modules\Attributes;
 class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 {
 	const NAME = 'href';
+	private $url;
 
 	public function __construct() {
+
+		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
+		$this->url = $setting['value'];
 	}
 
 	public function identifier() {
@@ -17,17 +21,20 @@ class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 	}
 
 	public function by_default() {
+		return array(
+			'value' => '',
+		);
 	}
 
 	public function active() {
-		return false;
+		return empty( $this->url ) ? false : true;
 	}
 
 	public function get() {
-		return '#sub-plg-test';
+		return $this->url;
 	}
 
 	public function merge( $value ) {
-		return $value . '#sub-plg-test';
+		return $value . $this->url;
 	}
 }
