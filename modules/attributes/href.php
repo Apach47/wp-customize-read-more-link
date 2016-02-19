@@ -12,17 +12,23 @@ class Href implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->url = $setting['value'];
+		$this->url = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function identifier() {
 		return static::NAME;
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'Link <%tag%>href</%tag%>',
+			'desc' => 'Append sufix to the <%tag%>href</%tag%> attribute',
+			'field_type' => 'text',
 		);
 	}
 

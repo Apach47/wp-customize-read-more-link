@@ -7,8 +7,11 @@ namespace RMLcustomizer\Core\Contents;
  */
 class Loader_Contents extends \RMLcustomizer\Core\Loader
 {
+	// Full path to directory consisting all content modules
 	const PATH_TO_CONTENTS = __DIR__ . '/../../modules/contents/';
+	// Namespace was consist all content modules
 	const NAMESPACE_CONTENT = '\\RMLcustomizer\\Modules\\Contents\\';
+	// Interface implementation each module's content
 	const BASIC_TYPE_CONTENTS = '\\RMLcustomizer\\Core\\Contents\\Basic_Content';
 
 	public function __construct() {
@@ -69,5 +72,18 @@ class Loader_Contents extends \RMLcustomizer\Core\Loader
 		}
 
 		throw new Exception( "Content's list not loaded", 1 );
+	}
+
+	/**
+	 * Options for setting section in admin page
+	 *
+	 * TODO: Move into setting scaffold in future version
+	 */
+	public function settings() {
+		return array(
+			'slug' => 'rml-content-modules',
+			'name' => 'Content',
+			'desc' => 'Some text will adding leter..',
+		);
 	}
 }

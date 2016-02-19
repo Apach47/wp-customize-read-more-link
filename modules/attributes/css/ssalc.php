@@ -13,17 +13,23 @@ class Ssalc implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->class = $setting['value'];
+		$this->class = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function identifier() {
 		return static::NAME;
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return 'rml-plugin';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => 'rml-plugin',
+			'slug' => __CLASS__,
+			'name' => 'CSS <%tag%>class</%tag>',
+			'desc' => 'Add or append <%tag%>class</%tag%> attribute to the link',
+			'field_type' => 'text',
 		);
 	}
 

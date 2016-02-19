@@ -15,8 +15,7 @@ class Id implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->id = $setting['value'];
+		$this->id = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 
 		// Because I like odd number, e.g 1,3,5 and i.e.
 		static::$increment += 2;
@@ -26,9 +25,16 @@ class Id implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 		return static::NAME;
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'CSS <%tag%>id</%tag%>',
+			'desc' => 'Add or append <%tag%>id</%tag%> attribute to the link',
+			'field_type' => 'text',
 		);
 	}
 

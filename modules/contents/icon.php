@@ -11,8 +11,7 @@ class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->icon = $setting['value'];
+		$this->icon = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function active() {
@@ -27,9 +26,16 @@ class Icon implements \RMLcustomizer\Core\Contents\Basic_Content
 		return new Wrap();
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'Add icon',
+			'desc' => 'Add icon before the link',
+			'field_type' => 'text',
 		);
 	}
 

@@ -7,10 +7,17 @@ namespace RMLcustomizer\Core;
 */
 class Setting
 {
+	// Namespace consist all modules
 	const MODULE_NAMESPACE = 'RMLcustomizer\\Modules\\';
 
 	// All option must be stored in single array for than sending database only one query
 	const ROOT_OPTION = 'rml-customizer';
+
+	// Option's group for setting's page
+	const GROUP_OPTION = 'rml-customizer-all-modules';
+
+	// Slug plugin for admin page
+	const ADMIN_PAGE_SLUG = 'rml-customizer-plugin';
 
 	// Array consist all plugin's option
 	private $setting_list;
@@ -38,47 +45,13 @@ class Setting
 	}
 
 	public function gg() {
-
-		// $result = $this->initialize();
+		$this->settings_init();
 
 		// var_dump( array( self::ROOT_OPTION => $this->option ) );
-		var_dump( $this->setting_list );
+		// var_dump( $this->setting_list );
 
 		// $term = $this->terminate();
 		// var_dump( $term );
-
-		/**
-		 * Все настройки хранятся в БД в виде одного массива
-		 * Один запрос к БД - извлечение всех опций с которыми работает плагин
-		 * По этой причине класс реализует паттерн Singleton
-		 *
-		 * Структура массива с настройками строится на основе полный имен классов модулей
-		 *
-		 */
-	}
-
-	/**
-	 * Create scaffold for all modules in plugin
-	 *
-	 * @return array
-	 */
-	private function scaffolding_options() {
-
-		// Load all existing modules
-		$modules = array_merge(
-			(new Attributes\Loader_Attributes())->load(),
-			(new Contents\Loader_Contents())->load()
-		);
-
-		$options_list = array();
-
-		foreach ( $modules as $name ) {
-			$classname = (new \ReflectionClass( $name ))->getName();
-			$option = $this->class_name_to_option_name( $classname );
-			$options_list[ $option ] = null;
-		}
-
-		return $options_list;
 	}
 
 	/**
@@ -136,7 +109,7 @@ class Setting
 
 		// Loading new module
 		if ( false === array_key_exists( $option, $this->setting_list ) ) {
-			$this->setting_list[ $option ] = $module->by_default();
+			$this->setting_list[ $option ] = $module->default_value();
 
 			if ( false === update_option( self::ROOT_OPTION, $this->setting_list ) ) {
 				throw new \Exception('Update options finished with fail.
@@ -148,9 +121,102 @@ class Setting
 	}
 
 	/**
-	 *
+	 * Display setting page in admin area
 	 */
-	public function add_page() {
+	public function admin_page() {
 
+		add_options_page(
+			'Customize [Read more...] link',
+			'[Read more...] link',
+			'manage_options',
+			self::ADMIN_PAGE_SLUG,
+			function() {
+				echo '<div class=\'wrap\'>';
+		        echo '<h2>' . __( 'My Plugin Options' ) . '</h2>';
+			        echo '<form action=\'options.php\' method=\'POST\'>';
+			            settings_fields( self::GROUP_OPTION );
+			            do_settings_sections( self::ADMIN_PAGE_SLUG );
+			            submit_button();
+			        echo '</form>';
+			    echo '</div>';
+			}
+	    );
+	}
+
+	public function init() {
+		register_setting( self::GROUP_OPTION, self::ROOT_OPTION );
+
+		$list_modules = array(
+			(new \RMLcustomizer\Core\Attributes\Loader_Attributes()),
+			(new \RMLcustomizer\Core\Contents\Loader_Contents()),
+		);
+
+		// Register all section and his fiels in option page
+		foreach ( $list_modules as $modules_container ) {
+
+			$section = $modules_container->settings();
+
+			add_settings_section(
+				$section['slug'],
+				$section['name'],
+				function() use ( $section ) {
+					return $this->section_hint( $section['desc'] );
+				},
+				self::ADMIN_PAGE_SLUG
+			);
+
+			foreach ( $modules_container->load() as $module ) {
+
+				$field = $module->option_field();
+				$id = $this->class_name_to_option_name( $field['slug'] );
+				$name = __( str_replace( '%tag%', 'span', $field['name'] ) );
+				$type = function() use ( $field, $id ) {
+					// TODO: Build list input's type and check 'field_type' with it
+					$render = 'input_' . $field['field_type'];
+
+					$arg = array( 'option' => $id, 'desc' => $field['desc'] );
+					// TODO: it hot fix
+					if ( isset( $field['field_value'] ) ) {
+						$arg['value'] = $field['field_value'];
+					}
+
+					return $this->$render($arg);
+				};
+
+				add_settings_field( $id, $name, $type, self::ADMIN_PAGE_SLUG, $section['slug'] );
+			}
+		}
+	}
+
+	public function section_hint( $hint = 'def' ) {
+		echo $hint . ' is work';
+	}
+
+	public function input_text( $arg ) {
+
+		$value = esc_attr( $this->setting_list[ $arg['option'] ] );
+
+		$html = sprintf(
+			'<input type=\'text\' name=\'%s\' value=\'%s\' />',
+			self::ROOT_OPTION . '[' . $arg['option'] . ']', $value
+		);
+
+		echo $html;
+
+	}
+
+	public function input_radio( $arg ) {
+		$value = esc_attr( $this->setting_list[ $arg['option'] ] );
+
+		$html = '';
+
+		foreach ( $arg['value'] as $item ) {
+			$html .= sprintf(
+				'<input type=\'radio\' name=\'%s\' value=\'%s\' />',
+				self::ROOT_OPTION . '[' . $arg['option'] . ']', $item
+			) . sprintf( '<span>%s</span>', $item );
+		}
+
+		echo $html;
 	}
 }

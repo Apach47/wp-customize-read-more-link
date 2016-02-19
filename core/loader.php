@@ -19,6 +19,13 @@ abstract class Loader
 	abstract public function load();
 
 	/**
+	 * Options for setting section in admin page
+	 *
+	 * TODO: Move into setting scaffold in future version
+	 */
+	abstract public function settings();
+
+	/**
 	 * Search and
 	 *
 	 * @folder string

@@ -12,17 +12,23 @@ class Ng_Click implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->ng_click = $setting['value'];
+		$this->ng_click = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function identifier() {
 		return static::NAME;
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'Angular <%tag%>ng-click</%tag%>',
+			'desc' => 'Add or replace <%tag%>ng-click</%tag%> directive to the link',
+			'field_type' => 'text',
 		);
 	}
 

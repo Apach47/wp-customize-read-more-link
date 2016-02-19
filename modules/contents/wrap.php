@@ -7,12 +7,12 @@ namespace RMLcustomizer\Modules\Contents;
  */
 class Wrap implements \RMLcustomizer\Core\Contents\Basic_Content
 {
-	private $wraper;
+	private $wrapper;
+	private $wrapper_class = 'rml-wrap';
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->wraper = $setting['value'];
+		$this->wraper = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function active() {
@@ -27,14 +27,22 @@ class Wrap implements \RMLcustomizer\Core\Contents\Basic_Content
 		return null;
 	}
 
-	public function by_default() {
+	public function default_value() {
 		// Value may be 'div' or 'span'
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'Wrap the link',
+			'desc' => 'Add wraper around the link. Wraper element will have <%tag%>rml-wrap</%tag> as css class',
+			'field_type' => 'radio',
+			'field_value' => array( 'div', 'span' ),
 		);
 	}
 
 	public function get( $html ) {
-		return sprintf( '<%1$s class="rml-wrap-plugin">%2$s</%1$s>', $this->wraper, $html );
+		return sprintf( '<%1$s class="' . $this->wrapper_class . '">%2$s</%1$s>', $this->wrapper, $html );
 	}
 }

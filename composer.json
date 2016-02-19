@@ -1,0 +1,14 @@
+{
+    "name": "apach47/customize-read-more-link",
+    "require": {
+        "ezyang/htmlpurifier": "^4.7",
+        "tareq1988/wordpress-settings-api-class": "^1.2"
+    },
+    "license": "GPL v3",
+    "authors": [
+        {
+            "name": "Apach47",
+            "email": "admin@k-maxim.ru"
+        }
+    ]
+}

@@ -12,35 +12,28 @@ class Title implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->title = $setting['value'];
+		$this->title = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function identifier() {
 		return static::NAME;
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'Link <%tag%>title</%tag%>',
+			'desc' => 'Append sufix to the <%tag%>title</%tag%> attribute',
+			'field_type' => 'text',
 		);
 	}
 
 	public function active() {
 		return empty( $this->title ) ? false : true;
-	}
-
-	/**
-	 * Setting field in the option page with admin panel
-	 *
-	 * @return array
-	 */
-	public function view() {
-		return array(
-			'type' => 'text',
-			'setting-field' => __CLASS__,
-			'validation' => 'absint',
-		);
 	}
 
 	public function get() {

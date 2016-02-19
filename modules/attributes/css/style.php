@@ -12,17 +12,23 @@ class Style implements \RMLcustomizer\Core\Attributes\Basic_Attribute
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->style = $setting['value'];
+		$this->style = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function identifier() {
 		return static::NAME;
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'CSS <%tag%>style</%tag%>',
+			'desc' => 'Add or append before css style to the <%tag%>style</%tag%> attribute',
+			'field_type' => 'text',
 		);
 	}
 

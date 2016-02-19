@@ -11,8 +11,7 @@ class Text implements \RMLcustomizer\Core\Contents\Basic_Content
 
 	public function __construct() {
 
-		$setting = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
-		$this->text = $setting['value'];
+		$this->text = \RMLcustomizer\Core\Setting::get_instance()->retrieve( $this );
 	}
 
 	public function active() {
@@ -27,9 +26,16 @@ class Text implements \RMLcustomizer\Core\Contents\Basic_Content
 		return new Icon();
 	}
 
-	public function by_default() {
+	public function default_value() {
+		return '';
+	}
+
+	public function option_field() {
 		return array(
-			'value' => '',
+			'slug' => __CLASS__,
+			'name' => 'Text link',
+			'desc' => 'Setup custom text for the link',
+			'field_type' => 'text',
 		);
 	}
 

@@ -44,8 +44,13 @@ class Bootstrap
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_styles' ) );
 
-		add_action( 'admin_menu', array( $this, 'add_menu_in_setting_item' ) );
-		add_action( 'admin_init', array( $this, 'setting_init' ) );
+		$this->settings_api = new \WeDevs_Settings_API();
+		// add_action( 'admin_menu', array( $this, 'add_menu_in_setting_item' ) );
+		// add_action( 'admin_menu', array( $this, 'setting_api_admin_menu_test' ) );
+		// add_action( 'admin_init', array( $this, 'setting_init' ) );
+		// add_action( 'admin_init', array( $this, 'setting_api_init' ) );
+
+		$this->admin_page();
 
 		add_filter( 'the_content_more_link', array( $this, 'rebuild_link' ), 10, 2 );
 
@@ -100,8 +105,8 @@ class Bootstrap
 	 */
 	private function run_plugin() {
 
-		$attributes = (new \RMLcustomizer\Core\Attributes\Loader_Attributes())->load();
-		$contents = (new \RMLcustomizer\Core\Contents\Loader_Contents())->load();
+		// $attributes = (new \RMLcustomizer\Core\Attributes\Loader_Attributes())->load();
+		// $contents = (new \RMLcustomizer\Core\Contents\Loader_Contents())->load();
 		\RMLcustomizer\Core\Setting::get_instance()->gg();
 
 		// add_filter('excerpt_more', array($this, 'excerpt_more'));
@@ -139,52 +144,74 @@ class Bootstrap
 		// Link after all transformation
 		$served_link = $manipulate->get_link();
 
-		var_dump( [ $attributes, $contents, $served_link ] );
+		var_dump( [ /*$attributes, $contents,*/ $served_link ] );
 		exit();
 		return $served_link;
 	}
 
-	/**
-	 * Add menu item admin panel.
-	 */
-	public function add_menu_in_setting_item() {
+	public function admin_page() {
+		$option_page = \RMLcustomizer\Core\Setting::get_instance();
 
+		add_action( 'admin_menu', array( $option_page, 'admin_page' ) );
+		add_action( 'admin_init', array( $option_page, 'init' ) );
+	}
+
+	// ==============================================
+
+	private $settings_api;
+
+	public function setting_api_init() {
+
+		$sections = array(
+			array(
+				'id' => 'attr',
+				'title' => __( 'Attributes', $this->text_domain ),
+			),
+			array(
+				'id' => 'content',
+				'title' => __( 'Contents', $this->text_domain ),
+			),
+		);
+
+		$fields = array(
+			'attr' => array(
+				array(
+					'name' => 'text #1',
+					'label' => __( 'Text Input #1', $this->text_domain ),
+					'desc' => __( 'Text input description #1', $this->text_domain ),
+					'type' => 'text',
+	            ),
+	            array(
+	                'name' => 'text #2',
+	                'label' => __( 'Text Input #2', $this->text_domain ),
+	                'desc' => __( 'Text input description #2', $this->text_domain ),
+	                'type' => 'text',
+				),
+			),
+		);
+
+		//set sections and fields
+		$this->settings_api->set_sections( $sections );
+		$this->settings_api->set_fields( $fields );
+
+		//initialize them
+		$this->settings_api->admin_init();
+	}
+
+	public function setting_api_admin_menu_test() {
 		add_options_page(
-			'Customize [Read more...] link',
-			'[Read more...] link',
-			'manage_options',
-			// $this->plugin_path.'template/main.php'
-			'rml-customize-plugin',
-			array( $this, 'rml_option_page' )
+			'Settings API',
+			'Settings API',
+			'delete_posts',
+			'settings_api_test',
+			array( $this, 'setting_api_admin_page_test' )
 		);
 	}
 
-	public function rml_option_page() {
-		?>
-	    <div class="wrap">
-	        <h2>My Plugin Options</h2>
-	        <form action="options.php" method="POST">
-	            <?php settings_fields( 'my-settings-group' ); ?>
-	            <?php do_settings_sections( 'rml-customize-plugin' ); ?>
-	            <?php submit_button(); ?>
-	        </form>
-	    </div>
-	    <?php
-	}
-
-	public function setting_init() {
-
-		register_setting( 'my-settings-group', 'my-setting' );
-	    add_settings_section( 'section-one', 'Section One', array( $this, 'section_one_callback' ), 'rml-customize-plugin' );
-	    add_settings_field( 'field-one', 'Field One', array( $this, 'field_one_callback' ), 'rml-customize-plugin', 'section-one' );
-	}
-
-	public function section_one_callback() {
-	    echo 'Some help text goes here.';
-	}
-
-	public function field_one_callback() {
-	    $setting = esc_attr( get_option( 'my-setting' ) );
-	    echo "<input type='text' name='my-setting' value='$setting' />";
+	public function setting_api_admin_page_test() {
+		echo '<div class="wrap">';
+		$this->settings_api->show_navigation();
+		$this->settings_api->show_forms();
+		echo '</div>';
 	}
 }

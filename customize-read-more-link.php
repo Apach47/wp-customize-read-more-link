@@ -44,6 +44,11 @@ spl_autoload_register(function ( $class ) {
 });
 
 /**
+ * Composer dependencies
+ */
+require_once __DIR__ . '/vendor/autoload.php';
+
+/**
  * Initialize the plugin
  */
 \RMLcustomizer\Bootstrap::get_instance();
